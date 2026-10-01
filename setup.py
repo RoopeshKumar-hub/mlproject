@@ -28,3 +28,5 @@ setup(
     packages=find_packages(),
     install_requires=get_requirements('requirements.txt')
 )
+
+#http://127.0.0.1:5000/predictdata
