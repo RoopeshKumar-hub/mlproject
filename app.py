@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 import numpy as np
 import pandas as pd
+from database import save_prediction, get_predictions
 
 from sklearn.preprocessing import StandardScaler
 from src.pipeline.predict_pipeline import CustomData, PredictPipeline
@@ -21,7 +22,12 @@ def index():
 def predict_datapoint():
 
     if request.method == 'GET':
-        return render_template('home.html')
+        predictions = get_predictions()
+
+        return render_template(
+            'home.html',
+            predictions=predictions
+        )
 
     else:
         data = CustomData(
@@ -49,9 +55,32 @@ def predict_datapoint():
 
         results = predict_pipeline.predict(pred_df)
 
+        # Save prediction details to MongoDB
+        save_prediction({
+            "gender": request.form.get('gender'),
+            "ethnicity": request.form.get('ethnicity'),
+            "parental_level_of_education": request.form.get(
+                'parental_level_of_education'
+            ),
+            "lunch": request.form.get('lunch'),
+            "test_preparation_course": request.form.get(
+                'test_preparation_course'
+            ),
+            "reading_score": float(request.form.get('reading_score')),
+            "writing_score": float(request.form.get('writing_score')),
+            "predicted_score": float(results[0])
+        })
+
         print("After Prediction")
 
-        return render_template('home.html', results=results[0])
+        # Get prediction history from MongoDB
+        predictions = get_predictions()
+
+        return render_template(
+            'home.html',
+            results=results[0],
+            predictions=predictions
+        )
 
 
 if __name__ == "__main__":

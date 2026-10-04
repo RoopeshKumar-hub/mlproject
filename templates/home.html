@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Student Prediction</title>
 
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -22,7 +26,7 @@
         }
 
         .page {
-            max-width: 850px;
+            max-width: 1100px;
             margin: auto;
         }
 
@@ -140,6 +144,71 @@
             color: #1d4ed8;
         }
 
+        .history {
+            margin-top: 35px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .history-table th {
+            background: #f3f4f6;
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #d1d5db;
+            white-space: nowrap;
+        }
+
+        .history-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        .history-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .prediction-score {
+            font-weight: 700;
+            color: #1d4ed8;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 14px;
+            color: #4b5563;
+        }
+
         .back-link {
             display: block;
             text-align: center;
@@ -154,6 +223,7 @@
         }
 
         @media (max-width: 650px) {
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
@@ -165,8 +235,11 @@
             .header h1 {
                 font-size: 27px;
             }
+
         }
+
     </style>
+
 </head>
 
 <body>
@@ -174,12 +247,16 @@
     <div class="page">
 
         <div class="header">
+
             <h1>Student Performance Prediction</h1>
+
             <p>
                 Enter the student's details and academic scores
                 to predict the mathematics score.
             </p>
+
         </div>
+
 
         <div class="card">
 
@@ -187,48 +264,64 @@
                 Student Information
             </div>
 
+
             <form action="{{ url_for('predict_datapoint') }}" method="post">
 
                 <div class="form-grid">
 
                     <div class="form-group">
+
                         <label>Gender</label>
 
                         <select name="gender" required>
+
                             <option selected disabled value="">
                                 Select gender
                             </option>
 
                             <option value="male">Male</option>
+
                             <option value="female">Female</option>
+
                         </select>
+
                     </div>
 
 
                     <div class="form-group">
+
                         <label>Race / Ethnicity</label>
 
                         <select name="ethnicity" required>
+
                             <option selected disabled value="">
                                 Select group
                             </option>
 
                             <option value="group A">Group A</option>
+
                             <option value="group B">Group B</option>
+
                             <option value="group C">Group C</option>
+
                             <option value="group D">Group D</option>
+
                             <option value="group E">Group E</option>
+
                         </select>
+
                     </div>
 
 
                     <div class="form-group">
+
                         <label>Parental Level of Education</label>
 
                         <select
                             name="parental_level_of_education"
                             required
                         >
+
                             <option selected disabled value="">
                                 Select education level
                             </option>
@@ -256,14 +349,18 @@
                             <option value="some high school">
                                 Some high school
                             </option>
+
                         </select>
+
                     </div>
 
 
                     <div class="form-group">
+
                         <label>Lunch Type</label>
 
                         <select name="lunch" required>
+
                             <option selected disabled value="">
                                 Select lunch type
                             </option>
@@ -275,28 +372,40 @@
                             <option value="free/reduced">
                                 Free / Reduced
                             </option>
+
                         </select>
+
                     </div>
 
 
                     <div class="form-group">
+
                         <label>Test Preparation Course</label>
 
                         <select
                             name="test_preparation_course"
                             required
                         >
+
                             <option selected disabled value="">
                                 Select course status
                             </option>
 
-                            <option value="none">None</option>
-                            <option value="completed">Completed</option>
+                            <option value="none">
+                                None
+                            </option>
+
+                            <option value="completed">
+                                Completed
+                            </option>
+
                         </select>
+
                     </div>
 
 
                     <div class="form-group">
+
                         <label>Reading Score</label>
 
                         <input
@@ -311,10 +420,12 @@
                         <span class="score-note">
                             Score between 0 and 100
                         </span>
+
                     </div>
 
 
                     <div class="form-group">
+
                         <label>Writing Score</label>
 
                         <input
@@ -329,6 +440,7 @@
                         <span class="score-note">
                             Score between 0 and 100
                         </span>
+
                     </div>
 
                 </div>
@@ -365,6 +477,110 @@
             {% endif %}
 
 
+            {% if predictions %}
+
+            <div class="history">
+
+                <div class="section-title">
+                    Prediction History
+                </div>
+
+                <div class="table-container">
+
+                    <table class="history-table">
+
+                        <thead>
+
+                            <tr>
+                                <th>Gender</th>
+                                <th>Ethnicity</th>
+                                <th>Education</th>
+                                <th>Lunch</th>
+                                <th>Preparation</th>
+                                <th>Reading</th>
+                                <th>Writing</th>
+                                <th>Predicted Score</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="predictionTable">
+
+                            {% for prediction in predictions %}
+
+                            <tr class="prediction-row">
+
+                                <td>
+                                    {{ prediction.gender }}
+                                </td>
+
+                                <td>
+                                    {{ prediction.ethnicity }}
+                                </td>
+
+                                <td>
+                                    {{ prediction.parental_level_of_education }}
+                                </td>
+
+                                <td>
+                                    {{ prediction.lunch }}
+                                </td>
+
+                                <td>
+                                    {{ prediction.test_preparation_course }}
+                                </td>
+
+                                <td>
+                                    {{ prediction.reading_score }}
+                                </td>
+
+                                <td>
+                                    {{ prediction.writing_score }}
+                                </td>
+
+                                <td class="prediction-score">
+                                    {{ prediction.predicted_score }}
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="pagination">
+
+                    <button
+                        id="previousButton"
+                        onclick="previousPage()"
+                    >
+                        Previous
+                    </button>
+
+                    <span
+                        class="page-info"
+                        id="pageInfo"
+                    ></span>
+
+                    <button
+                        id="nextButton"
+                        onclick="nextPage()"
+                    >
+                        Next
+                    </button>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
             <a
                 href="{{ url_for('index') }}"
                 class="back-link"
@@ -376,5 +592,85 @@
 
     </div>
 
+
+    <script>
+
+        const rowsPerPage = 5;
+
+        let currentPage = 1;
+
+        const rows = document.querySelectorAll(".prediction-row");
+
+        const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+        function showPage(page) {
+
+            if (rows.length === 0) {
+                return;
+            }
+
+            currentPage = page;
+
+            const start = (currentPage - 1) * rowsPerPage;
+
+            const end = start + rowsPerPage;
+
+            rows.forEach((row, index) => {
+
+                if (index >= start && index < end) {
+
+                    row.style.display = "";
+
+                } else {
+
+                    row.style.display = "none";
+
+                }
+
+            });
+
+            document.getElementById("pageInfo").textContent =
+                "Page " + currentPage + " of " + totalPages;
+
+            document.getElementById("previousButton").disabled =
+                currentPage === 1;
+
+            document.getElementById("nextButton").disabled =
+                currentPage === totalPages;
+
+        }
+
+
+        function nextPage() {
+
+            if (currentPage < totalPages) {
+
+                showPage(currentPage + 1);
+
+            }
+
+        }
+
+
+        function previousPage() {
+
+            if (currentPage > 1) {
+
+                showPage(currentPage - 1);
+
+            }
+
+        }
+
+
+        if (rows.length > 0) {
+
+            showPage(1);
+
+        }
+
+    </script>
+
 </body>
+
 </html>
